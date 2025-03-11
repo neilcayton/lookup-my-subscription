@@ -11,6 +11,8 @@ export interface Subscription {
     price: number;
     currency: string;
     date: string;
+    billingCycle: string; // e.g., 'monthly', 'yearly', etc.
+    nextBillingDate?: string; // Optional next billing date
     transactionHistory?: Transaction[];
     userId?: string;
 }
