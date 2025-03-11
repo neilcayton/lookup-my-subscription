@@ -79,6 +79,16 @@
   font-size: 0.9rem;
 }
 
+.info-message {
+  padding: 0.8rem;
+  margin-top: 1rem;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .auth-link {
   margin-top: 1.5rem;
   text-align: center;

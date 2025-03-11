@@ -24,7 +24,7 @@ interface SubscriptionProviderProps {
 }
 
 export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ children }) => {
-  const currentUser = useAuthState();
+  const { currentUser } = useAuthState();
   const { data: subscriptions, isLoading, error } = useUserSubscriptions(currentUser?.uid);
   
   const value = {

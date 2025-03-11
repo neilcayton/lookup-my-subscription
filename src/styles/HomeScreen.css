@@ -56,17 +56,11 @@
   margin-bottom: 1rem;
 }
 
-.total-amount {
+.summary-amount {
   font-size: 2.5rem;
   font-weight: 700;
   color: #333;
   margin: 0.5rem 0;
-}
-
-.subscription-count {
-  color: #777;
-  font-size: 0.9rem;
-  margin: 0;
 }
 
 .subscription-actions {
@@ -90,11 +84,49 @@
   background-color: #3a7bc8;
 }
 
-.loading {
+.loading-container {
   text-align: center;
   padding: 2rem;
   color: #666;
   font-size: 1rem;
+}
+
+.error-container {
+  text-align: center;
+  padding: 2rem;
+  background-color: #fff8f8;
+  border-radius: 8px;
+  border: 1px solid #ffebee;
+  margin-bottom: 2rem;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.error-details {
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.retry-button {
+  padding: 0.6rem 1.2rem;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.retry-button:hover {
+  background-color: #3a7bc8;
 }
 
 .empty-state {
@@ -105,8 +137,10 @@
   color: #666;
 }
 
-.empty-state p {
-  margin: 0.5rem 0;
+.empty-state p:first-child {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
 .subscription-list {
@@ -117,14 +151,15 @@
 
 .subscription-card {
   display: flex;
-  align-items: center;
-  padding: 1.2rem;
+  flex-direction: column;
   background-color: white;
   border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 
 .subscription-card:hover {
@@ -133,64 +168,99 @@
 }
 
 .subscription-logo {
-  width: 60px;
-  height: 60px;
-  margin-right: 1rem;
-  overflow: hidden;
-  border-radius: 8px;
-  background-color: #f0f0f0;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f8f9fa;
+  padding: 1rem;
 }
 
 .subscription-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-height: 80px;
+  max-width: 80%;
+  object-fit: contain;
 }
 
-.logo-placeholder {
-  width: 100%;
-  height: 100%;
+.placeholder-logo {
+  width: 60px;
+  height: 60px;
+  background-color: #4a90e2;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #4a90e2;
-  color: white;
   font-size: 1.8rem;
-  font-weight: bold;
+  font-weight: 600;
+  border-radius: 50%;
 }
 
 .subscription-details {
-  flex: 1;
+  padding: 1.2rem;
+  flex-grow: 1;
 }
 
 .subscription-details h3 {
-  margin: 0 0 0.5rem 0;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
   font-size: 1.2rem;
   color: #333;
 }
 
 .subscription-price {
+  font-size: 1.1rem;
   font-weight: 600;
   color: #4a90e2;
-  margin: 0.3rem 0;
+  margin: 0.5rem 0;
 }
 
 .subscription-date {
-  font-size: 0.85rem;
-  color: #888;
-  margin: 0.3rem 0 0 0;
+  font-size: 0.9rem;
+  color: #777;
+  margin: 0.5rem 0 0;
 }
 
-.error-message {
-  padding: 0.8rem;
-  margin-bottom: 1rem;
-  background-color: #ffebee;
-  color: #d32f2f;
+.subscription-actions {
+  display: flex;
+  padding: 0.8rem 1.2rem;
+  background-color: #f8f9fa;
+  gap: 0.8rem;
+}
+
+.edit-button, .delete-button {
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   font-size: 0.9rem;
+  cursor: pointer;
+  text-align: center;
+  flex: 1;
+  transition: all 0.2s;
+}
+
+.edit-button {
+  background-color: #4a90e2;
+  color: white;
+  text-decoration: none;
+  border: none;
+}
+
+.edit-button:hover {
+  background-color: #3a7bc8;
+}
+
+.delete-button {
+  background-color: transparent;
+  color: #e53935;
+  border: 1px solid #e53935;
+}
+
+.delete-button:hover {
+  background-color: #ffebee;
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -206,6 +276,18 @@
   
   .header-actions {
     width: 100%;
-    justify-content: flex-end;
+  }
+  
+  .logout-button {
+    width: 100%;
+  }
+  
+  .subscription-actions {
+    width: 100%;
+  }
+  
+  .add-button {
+    width: 100%;
+    text-align: center;
   }
 }

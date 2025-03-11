@@ -9,7 +9,7 @@ const AddEditScreen: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const isEditMode = !!id;
   const navigate = useNavigate();
-  const currentUser = useAuthState();
+  const { currentUser, loading: authLoading } = useAuthState();
   
   const [formData, setFormData] = useState<Omit<Subscription, 'id'>>({
     name: '',
@@ -34,13 +34,23 @@ const AddEditScreen: React.FC = () => {
   const { mutate: createSubscriptionMutation, isPending: isCreating } = useCreateSubscription();
   const { mutate: updateSubscriptionMutation, isPending: isUpdating } = useUpdateSubscription();
 
-  const isLoading = isLoadingSubscription || isCreating || isUpdating;
+  const isLoading = authLoading || isLoadingSubscription || isCreating || isUpdating;
 
   useEffect(() => {
     if (subscriptionError) {
       setError('Failed to load subscription details');
     }
   }, [subscriptionError]);
+
+  // Update userId when auth state changes
+  useEffect(() => {
+    if (currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        userId: currentUser.uid
+      }));
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     // Populate form with subscription data when in edit mode
@@ -55,6 +65,7 @@ const AddEditScreen: React.FC = () => {
         currency: subscriptionData.currency,
         date: formattedDate,
         billingCycle: subscriptionData.billingCycle || 'monthly',
+        nextBillingDate: subscriptionData.nextBillingDate,
         userId: subscriptionData.userId || currentUser?.uid || '',
         transactionHistory: subscriptionData.transactionHistory,
       });
@@ -62,45 +73,57 @@ const AddEditScreen: React.FC = () => {
   }, [subscriptionData, isEditMode, currentUser]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? parseFloat(value) : value,
+      [name]: name === 'price' ? parseFloat(value) || 0 : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError('');
+
     if (!currentUser) {
-      setError('You must be logged in to perform this action');
-      return;
+      return setError('You must be logged in to perform this action');
     }
-    
+
+    if (!formData.name) {
+      return setError('Subscription name is required');
+    }
+
+    if (formData.price <= 0) {
+      return setError('Price must be greater than 0');
+    }
+
     try {
       if (isEditMode && id) {
         updateSubscriptionMutation(
           { id, ...formData },
           {
-            onSuccess: () => navigate('/'),
-            onError: (err) => setError(err.message || 'Failed to update subscription')
+            onSuccess: () => {
+              navigate('/');
+            },
+            onError: (err: any) => {
+              setError(err.message || 'Failed to update subscription');
+            },
           }
         );
       } else {
         createSubscriptionMutation(
+          formData,
           {
-            ...formData,
-            userId: currentUser.uid,
-          },
-          {
-            onSuccess: () => navigate('/'),
-            onError: (err) => setError(err.message || 'Failed to create subscription')
+            onSuccess: () => {
+              navigate('/');
+            },
+            onError: (err: any) => {
+              setError(err.message || 'Failed to create subscription');
+            },
           }
         );
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to save subscription');
+      setError(err.message || 'An error occurred');
     }
   };
 
