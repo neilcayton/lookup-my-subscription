@@ -63,8 +63,7 @@ export async function updateSubsription(sub: Subscription): Promise<void> {
     
 }
 
-export async function deleteSubscription(sub: Subscription): Promise<void> {
-    const docRef = doc(db,SUBSCRIPTION_COLLECTION, sub.id)
+export async function deleteSubscription(id: string): Promise<void> {
+    const docRef = doc(db, SUBSCRIPTION_COLLECTION, id)
     await deleteDoc(docRef)
-    
 }
